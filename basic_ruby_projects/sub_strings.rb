@@ -6,14 +6,10 @@
 def substrings (words, sub_array) 
     words_array = words.split(" ")
     return_hash = {}
-    words_array.each do |word|
-        sub_array.each do |sub|
+    sub_array.each do |sub|
+        words_array.each do |word|
             if word.downcase.match(sub)
-                unless return_hash[sub]
-                    return_hash[sub] = 1
-                else
-                    return_hash[sub] += 1
-                end
+                return_hash[sub] ? return_hash[sub] += 1 : return_hash[sub] = 1
             end
         end
     end
