@@ -25,11 +25,12 @@ class Game
   def update_board(placement)
     @current_game[placement] = @player_turn
     change_turn
-    display_board
+    display_boards
+    self.is_tie? ? self.update_winner(true) : false
   end
 
-  def update_winner
-    @winner = @player_turn
+  def update_winner(tie=false)
+    tie ? @winner = "tie" : @winner = @player_turn
   end
 
   def has_winner?
@@ -38,6 +39,10 @@ class Game
 
   def open_spot?(position)
     current_game[position] == "" ? true : false
+  end
+
+  def is_tie?
+    @current_game.any { |cell| cell == ""}
   end
 
   private
@@ -126,5 +131,9 @@ until new_game.has_winner?
 end
 
 #handles end of game message
-new_game.has_winner? == "x" ? winner = player_x : winner = player_o
-puts "#{winner.name} is the winner!"
+if new_game.has_winner? == "tie"
+  result = "It's a tie!"
+else
+  new_game.has_winner? == "x" ? result = "#{player_x.name} is the winner!" : result = "#{player_o.name} is the winner!"
+end
+puts result
