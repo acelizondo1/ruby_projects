@@ -25,7 +25,7 @@ class Game
   def update_board(placement)
     @current_game[placement] = @player_turn
     change_turn
-    display_boards
+    display_board
     self.is_tie? ? self.update_winner(true) : false
   end
 
@@ -42,7 +42,7 @@ class Game
   end
 
   def is_tie?
-    @current_game.any { |cell| cell == ""}
+    @current_game.none? { |cell| cell[1] == "" }
   end
 
   private
