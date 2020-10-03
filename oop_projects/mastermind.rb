@@ -16,16 +16,24 @@ end
 
 class Game
   include Colors
+  @@max_guess = 12
+
+  attr_reader :secret_code
 
   def initialize(role, code)
     @role = "computer"
-    @secret_code = Array.new(4)
+    @secret_code = generate_secret_code
   end
 
   def generate_secret_code
-    @secret_code.map! do |code| 
+    code = Array.new(4)
+    code.map! do |code| 
       code = generate_random_color
     end
+  end
+
+  def self.max_guess
+    @@max_guess
   end
 
 end
@@ -33,9 +41,11 @@ end
 class Player
   include Colors
 
+  attr_reader :guess_count, :guess
+
   def initialize(role)
     @role         = "player"
-    @player_guess = ""
+    @guess        = ""
     @guess_count  = 0
   end
 
@@ -44,4 +54,6 @@ end
 new_game = Game.new("computer", 1)
 player = Player.new("player")
 
-p new_game.generate_secret_code
+until player.guess_count > Game.max_guess || player.guess == new_game.secret_code
+  
+end
