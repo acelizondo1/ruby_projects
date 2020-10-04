@@ -23,22 +23,25 @@ module Colors
     puts color_string
   end
 
+  def is_valid_color?(color_string)
+    COLORS.include?(color_string)
+  end
 end
 
 class Game
   include Colors
-  @@max_guess = 12
+  @@MAX_GUESS = 2
 
   attr_reader :secret_code
 
   def initialize(role, code)
     @role = "computer"
-    #@secret_code = generate_secret_code
-    @secret_code = ['red', 'blue', 'yellow', 'purple']
+    @secret_code = generate_secret_code
   end
 
   def start_game(player)
-    until player.guess_count > Game.max_guess || player.guess == @secret_code
+    until player.guess_count >= @@MAX_GUESS || player.guess == @secret_code
+      puts "You have #{@@MAX_GUESS-player.guess_count} guesses left."
       player.ask_for_guess
       guess_result = check_code(player.guess)
       unless guess_result[0] == 4 && guess_result[1] ==4
@@ -48,7 +51,11 @@ class Game
     if(player.guess == @secret_code)
       puts "You successfully guessed the code!"
     else
-      puts "You ran out of turns, try again."
+      puts "You ran out of guesses. The correct code was:"
+      @secret_code.each do |code|
+        print code + " "
+      end
+      puts "\nPlease try again."
     end
   end
 
@@ -67,7 +74,6 @@ class Game
     else
       match_array = [0,0]
       @secret_code.each_with_index do |code, index|
-        p player_code
         if player_code[index] == code
           match_array[0] += 1
           match_array[1] += 1
@@ -82,11 +88,6 @@ class Game
   def display_guess_results(results)
     puts "Your guess had #{results[0]} colors in the right position and #{results[1]} total correct colors"
   end
-
-  def self.max_guess
-    @@max_guess
-  end
-
 
 end
 
@@ -118,7 +119,7 @@ class Player
     guess_string = guess_string.split(" ")
     guess_string.each do |color_guess|
       color_guess = color_guess.downcase
-      if is_valid?(color_guess)
+      if is_valid_color?(color_guess)
         guess_array.push(color_guess)
       elsif color_guess == 'options'
         list_colors
@@ -128,10 +129,6 @@ class Player
       end
     end
     guess_array
-  end
-
-  def is_valid?(color_string)
-    COLORS.include?(color_string)
   end
 
 end
