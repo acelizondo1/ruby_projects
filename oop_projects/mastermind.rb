@@ -1,3 +1,4 @@
+#module to store elemens needed for both game and player classes
 module Colors
   COLORS = [
     "red", 
@@ -8,6 +9,7 @@ module Colors
     "purple"
   ]
 
+  #Returns a string that holds a color, takes in a int to repreent hich color to return
   def return_string_by_index(index_array)
     string_array = []
     index_array.each do |index|
@@ -16,10 +18,12 @@ module Colors
     string_array
   end
 
+  #returns a random color string 
   def generate_random_color
     COLORS[rand(6)]
   end
 
+  #Lists all of the available color choices to the console
   def list_colors
     color_string = "\nThe available colors are "
     COLORS.each_with_index do |color, index|
@@ -31,10 +35,12 @@ module Colors
     puts color_string
   end
 
+  #Takes in a a string and checks if it is a valid color string
   def is_valid_color?(color_string)
     COLORS.include?(color_string)
   end
 
+  #takes in the player guessed code and the secret code. Returns an array of ints representing how many colors are in the right slot and how many correct colors were guessed
   def check_code(player_code, secret_code)
     match_array = []
     if player_code == secret_code
@@ -69,6 +75,7 @@ class Game
     end
   end
 
+  #Checks if game should run computer_game or player_game
   def start_game(player)
     if @role == "player"
       computer_game(player)
@@ -77,6 +84,7 @@ class Game
     end
   end
 
+  #Runs if player will enter secret code for computer to guess, takes in a player instance
   def computer_game(player)
     computer_guess = []
     @secret_code = player.ask_for_code
@@ -91,6 +99,7 @@ class Game
     display_end_game(player)
   end
 
+  ##Runs if player will guess the computer generated secret code, takes in a player instance
   def player_game(player)
     until player.guess_count >= @@MAX_GUESS || player.guess == @secret_code
       puts "You have #{@@MAX_GUESS-player.guess_count} guesses left."
@@ -104,6 +113,7 @@ class Game
   end
 
   private
+  #Randomly generates a 4 color secret code and returns it
   def generate_secret_code
     code = Array.new(4)
     code.map! do |code| 
@@ -111,6 +121,7 @@ class Game
     end
   end
 
+  #Displays the guess comparison results to the console. Takes in a results array 
   def display_guess_results(results)
     if @role == "computer"
       addressing_string = "Your"
@@ -120,6 +131,7 @@ class Game
     puts "#{addressing_string} guess had #{results[0]} colors in the right position and #{results[1]} total correct colors"
   end
 
+  #Displays a final string to show the end of the game. Accepts a player object to determine if player won or lost
   def display_end_game(player)
     if(player.guess == @secret_code)
       if @role == "computer"
@@ -152,15 +164,18 @@ class Player
     end
   end
 
+  #Prompts user to enter 4 color code to be used as the secret code. Returns array of strings
   def ask_for_code
     get_code("Please enter the code your four color code in the format 'color color color color'(to list available color options enter 'options'):")
   end
 
+  #Prompts user for guess. Returns array of string.
   def ask_for_guess
     @guess_count += 1
     @guess = get_code("Please enter your guess in the format 'color color color color'(to list available color options enter 'options'):")
   end
 
+  #Takes in array of last guess results and the secret code. Returns computer next guess. 
   def generate_computer_guess(response_array, secret_code)
     @guess_count += 1
     if guess_count == 1
@@ -179,6 +194,7 @@ class Player
   end
 
   private
+  #Prompts user for code entry. Loops until valid 4 colors are entered. Takes in string to display and returns an array of color strings
   def get_code(display_string)
     valid_response = false
     until valid_response
@@ -189,6 +205,7 @@ class Player
     valid_response
   end
 
+  #Takes in a string of user input. Returns an array of 4 strings if valid colors or returns false if one or more entry is invalid
   def validate_response(guess_string)
     guess_array = []
     guess_string = guess_string.split(" ")
@@ -209,6 +226,7 @@ class Player
     guess_array
   end
 
+  #Generates an array of arrays with each entry being an array from [0,0,0,0],[0,0,0,1]...[5,5,5,4], [5,5,5,5]
   def generate_guess_array
     guess_array = []
     for i in 0..5
