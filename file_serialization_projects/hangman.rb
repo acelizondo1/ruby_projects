@@ -1,8 +1,18 @@
 
 
 class Hangman
-    @@INCORRECT_GUESSES_ALLOWED = 6
-
+    @@INCORRECT_GUESSES_ALLOWED = 7
+    @@HANGMAN = [
+        ["  _____ ", " |     |", "       |", "       |", "       |", "       |", "_______|"],
+        ["  _____ ", " |     |", " O     |", "       |", "       |", "       |", "_______|"],
+        ["  _____ ", " |     |", " O     |", " |     |", "       |", "       |", "_______|"],
+        ["  _____ ", " |     |", " O     |", "_|     |", "       |", "       |", "_______|"],
+        ["  _____ ", " |     |", " O     |", "_|_    |", "       |", "       |", "_______|"],
+        ["  _____ ", " |     |", " O     |", "_|_    |", " |     |", "       |", "_______|"],
+        ["  _____ ", " |     |", " O     |", "_|_    |", " |     |", "/      |", "_______|"],
+        ["  _____ ", " |     |", " O     |", "_|_    |", " |     |", "/  \    |", "_______|"]
+    ]
+    
     def initialize()
         @word = choose_word
         @guessed_word = Array.new(@word.length)
@@ -14,6 +24,7 @@ class Hangman
     def start_game
         until @incorrect_guesses == @@INCORRECT_GUESSES_ALLOWED || @guessed_word == @word
             puts "You have #{@@INCORRECT_GUESSES_ALLOWED - @incorrect_guesses} wrong guesses left!\n"
+            display_hangman
             display_word
             guessed_letter = ask_for_guess
             check_guess(guessed_letter)
@@ -21,6 +32,8 @@ class Hangman
         if @guessed_word == @word
             puts "Congrats! You won the game!"
         else
+            #@incorrect_guesses += 1
+            display_hangman
             puts "You ran out of guesses. Try Again!"
         end
     end
@@ -36,23 +49,6 @@ class Hangman
             @incorrect_letters.push(guess_letter)
             @incorrect_guesses += 1
         end
-    end
-
-    def display_word
-        puts ""
-        @guessed_word.each do |letter|
-            if letter
-                print letter
-            else
-                print " "
-            end
-            print " "
-        end
-        print "\n"
-        @guessed_word.each { |letter| print "_ " }
-        puts "\n\nIncorrectly guessed letters: \n"
-        @incorrect_letters.each { |letter| print letter + ", " }
-        puts "\n\n"
     end
 
     def ask_for_guess
@@ -71,6 +67,26 @@ class Hangman
             word = words[rand(words.length)].chomp
         end
         word.downcase.split('')
+    end
+
+    def display_word
+        puts ""
+        @guessed_word.each do |letter|
+            if letter
+                print letter
+            else
+                print "_"
+            end
+            print " "
+        end
+        puts "\n\nIncorrectly guessed letters: \n"
+        @incorrect_letters.each { |letter| print letter + ", " }
+        puts "\n\n"
+    end
+
+    def display_hangman
+        p @incorrect_guesses
+        @@HANGMAN[@incorrect_guesses].each { |row| puts row }
     end
 
     def guessed?(letter)
