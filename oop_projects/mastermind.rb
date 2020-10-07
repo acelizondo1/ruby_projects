@@ -46,15 +46,23 @@ module Colors
     if player_code == secret_code
       match_array = [4,4]
     else
-      match_array = [0,0]
+      match_array = [0,{}]
       player_code.each_with_index do |code, index|
         if secret_code[index] == code
           match_array[0] += 1
-          match_array[1] += 1
-        elsif secret_code.include?(code)
-          match_array[1] += 1
+        end
+        if secret_code.include?(code)
+          case secret_code.count(code) <=> player_code.count(code)
+          when 1
+            match_array[1][code] = player_code.count(code)
+          else
+            match_array[1][code] = secret_code.count(code)
+          end     
         end
       end
+      color_match = 0
+      match_array[1].each { |key, val| color_match += val }
+      match_array[1] = color_match
     end
     match_array
   end
